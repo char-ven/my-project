@@ -12,7 +12,7 @@ pipeline {
 
     stages {
 
-        stage('Git Checkout') { hellos. udeat
+        stage('Git Checkout') { hellos. udeatr
             steps {
                 git branch: 'docker_cicd', url: 'https://github.com/char-ven/Demo_project.git'
             }
