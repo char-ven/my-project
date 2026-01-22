@@ -1,0 +1,152 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: login-rc
+  namespace: login
+spec:
+  replicas: 1
+  selector:
+    microservices: login
+  template:
+    metadata:
+      name: login-pod
+      labels:
+        microservices: login
+    spec:
+      containers:
+        - name: login-container
+          image: mithuntechnologies/maven-web-application:1
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: login-service
+  namespace: login
+spec:
+  type: NodePort
+  selector:
+    microservices: login
+  ports:
+    - port: 80
+      targetPort: 8080
+
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: login-rs
+  namespace: login
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      microservices: login
+  template:
+    metadata:
+      labels:
+        microservices: login
+    spec:
+      containers:
+        - name: replicasets-container
+          image: mithuntechnologies/maven-web-application:1
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: login-service
+  namespcae: login
+spec:
+  type: NodePort
+  selector:
+    microservices: login
+    ports:
+      - port: 80
+        targetPort: 8080
+
+---
+apiVersion: v1
+kind: pods
+metadata:
+  name: maven-pods
+  namespcae: production
+  labels:
+    application: maven
+spec:
+  containers:
+    - name: maven-conatiner
+      image: mithuntechnologies/maven-web-application:1
+      imagePullPolicy: Never
+      ports:
+        - conatianerport: 8080
+---
+apiVersion: v1
+kind: Pods
+metadata:
+  name: Pod-name
+  namespace: Production
+  labels:
+    application: maven
+spec:
+  containers:
+    - name: maven-conatiner
+      image:
+      imagePullPolicy: Never
+      ports:
+        - containerPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maven-deployment
+  namespace: deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      application: maven
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        application: maven
+    spec:
+      containers:
+        - name: maven-container
+          image: mithuntechnologies/maven-web-application:1
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: maven-service
+  namespace: deployment
+spec:
+  type: NodePort
+  selector:
+    application: maven
+  ports:
+    - port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: pods
+metadata:
+  name: maven-service
+  namespace: production
+  labels: 
+    application: maven
+spec:
+  container:
+    name: prod-container
+  image:
+  imagePullPolicy: Nerver
+  ports:
+    - conatinerports: 8080
+
